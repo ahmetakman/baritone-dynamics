@@ -1,0 +1,46 @@
+% RTL-SDR parameters
+centerFrequency = 103.1e6;  % Center frequency in Hz (adjust as needed)
+sampleRate = 3.2e6;        % Sample rate in Hz (adjust as needed)
+
+% Create RTL-SDR object
+sdrDevice = comm.SDRRTLReceiver('CenterFrequency', centerFrequency, 'SampleRate', sampleRate, 'EnableTunerAGC', true);
+
+% Acquire samples
+samples = sdrDevice();
+
+% Release RTL-SDR object
+% release(sdrDevice);
+
+% Plot the received signal
+% figure;
+% plot(samples);
+% title('Received Signal');
+% xlabel('Sample Index');
+% ylabel('Amplitude');
+
+% Perform FFT to detect the single tone
+fftSize = 64;
+fftResult = fft(samples, fftSize);
+frequencyAxis = linspace((centerFrequency-sampleRate/2), (centerFrequency+sampleRate/2), fftSize);
+
+% Plot the FFT result
+figure;
+plot(frequencyAxis/1e6, 20*log10(abs(fftResult)));
+title('FFT of Received Signal');
+xlabel('Frequency (MHz)');
+ylabel('Magnitude (dB)');
+
+% Find the frequency with the highest gain
+[~, maxIndex] = max(abs(fftResult));
+maxFreq = frequencyAxis(maxIndex);
+
+% Since second one is the desired frequency for the detection due to SDR
+% noise
+% Set the magnitude at the peak index to zero to find the second-highest gain
+fftResult(maxIndex) = 0;
+
+% Find the frequency with the second-highest gain
+[secondPeak, secondPeakIndex] = max(abs(fftResult));
+secondFreq = frequencyAxis(secondPeakIndex);
+
+disp(['Frequency with the Second Highest Gain: ', num2str(secondFreq/1e6), ' MHz']);
