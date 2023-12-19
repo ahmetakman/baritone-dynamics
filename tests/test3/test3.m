@@ -57,10 +57,11 @@ gains_per_angle = [];
 for j = 1:num_angle
 [Av,FREQ] = scan(rxPluto,detected_freq,sample_frequency);
 
+disp(["Set the angle to",num2str(angle_array(j)),"and press a key to measure."])
 if(Av>-40)
     gains_per_angle = [gains_per_angle Av];
 else
-    angle_array(j) = []
+    angle_array(j) = [];
 end
 end
 
@@ -74,7 +75,7 @@ plot(angle_array, gains_per_angle);
 xlabel("Angle in degrees");
 ylabel("Gain per angle");
 grid on;
-title("Estimated Angle = ",num2str(estimated_angle));
+title(["Estimated Angle = ",num2str(estimated_angle)]);
 %%%%%%%%%%%%%%%% FUNCTION DEFINITION %%%%%%%%%%%%%%%%%%
 % Search function:
 % It sweep through the frequencies specified and returns the detected frequency for that search with its gain.
@@ -142,23 +143,13 @@ end
 
 function [gain,detected_f] = scan(rxPluto,freq_,sample_frequency)
 
-
-    tic;
-    
-
-    
     rxPluto.CenterFrequency = freq_;
     
     data = rxPluto();
-    %release(rxPluto);
-    
-    [p, f] = pspectrum(data, sample_frequency);
-    
-    
-    toc
+    %release(rxPluto);    
+    p = pspectrum(data, sample_frequency);
     
     [M, j] = max(p);
-    
     
     gain = pow2db(M);
     
