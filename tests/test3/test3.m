@@ -2,7 +2,7 @@
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
 
-sample_frequency = 6e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
+sample_frequency = 2e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
 interval = [2.8 3.8] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
@@ -21,9 +21,9 @@ num_iter = int32(overlap_coefficient*(interval(2)-interval(1))/(sample_frequency
 frequencies = linspace(interval(1),interval(2),num_iter);
 
 % set the angle point group. e.g. = [0 10 20 30 40 ... 355]
-num_angle = int32(max_angle/angle_interval);
+num_angle = int32((max_angle-angle_interval)/angle_interval)+1;
 
-angle_array = linspace(0,max_angle,num_angle);
+angle_array = linspace(0,(max_angle-angle_interval),num_angle);
 
 % initialization of the pluto rx object.
 rxPluto = sdrrx('Pluto',...
@@ -54,17 +54,19 @@ end
 pause(0.01)
 
 gains_per_angle = [];
+
 for j = 1:num_angle
+disp(["Set the angle to",num2str(angle_array(j)),"and press a key to measure."])
+pause;
 [Av,FREQ] = scan(rxPluto,detected_freq,sample_frequency);
 
-disp(["Set the angle to",num2str(angle_array(j)),"and press a key to measure."])
 if(Av>-40)
     gains_per_angle = [gains_per_angle Av];
 else
-    angle_array(j) = [];
+    angle_array(j) = 0;
 end
 end
-
+angle_array = nonzeros(angle_array)
 %%%%%%%% Estimate the angle %%%%%%
 mean_gain = mean(gains_per_angle);
 filtered_logical = gains_per_angle > mean_gain;
@@ -153,6 +155,6 @@ function [gain,detected_f] = scan(rxPluto,freq_,sample_frequency)
     
     gain = pow2db(M);
     
-    detected_f = (freq-sample_frequency/2)+j;
+    detected_f = (freq_-sample_frequency/2)+j;
     
 end

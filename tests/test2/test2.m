@@ -5,7 +5,7 @@ sample_frequency = 6e+7; % baseband sample rate range = (min--> 6.52e+4,  max-->
 interval = [2.8 3.8] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
-overlap_coefficient = 1; % in case an overlap needed.
+overlap_coefficient = 3; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 
