@@ -1,4 +1,5 @@
-
+clear all;
+clc;
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
 
@@ -10,7 +11,7 @@ overlap_coefficient = 1; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 
-max_angle = 180; % in degrees.
+max_angle = 360; % in degrees.
 angle_interval = 10; % e.g. change per measurement.
 
 
@@ -45,7 +46,7 @@ rxPluto.Gain = 10; % To be tuned further.
 
 [Av, detected_freq] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
 
-if(Av>-55)
+if(Av>-65)
 disp(Av);
 disp(detected_freq);
 else
@@ -53,16 +54,16 @@ disp("Not yet detected")
 end
 pause(1)
 
-freq_scan = linspace((detected_freq-20*sample_frequency),(detected_freq+20*sample_frequency),40);
+freq_scan = linspace(int32(detected_freq-20*sample_frequency),int32(detected_freq+20*sample_frequency),40);
 
 gains_per_angle = [];
 
 for j = 1:num_angle
 disp(["Set the angle to",num2str(angle_array(j)),"and press a key to measure."])
 pause;
-[Av,FREQ] = search(rxPluto,freq_scan,sample_frequency,40,plot_while_scanning);
+[Av,FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 
-if(Av>-55)
+if(Av>-65)
     gains_per_angle = [gains_per_angle Av];
 else
     angle_array(j) = 1;
@@ -72,7 +73,7 @@ angle_array = angle_array(angle_array>1);
 %%%%%%%% Estimate the angle %%%%%%
 mean_gain = mean(gains_per_angle);
 filtered_logical = gains_per_angle > mean_gain;
-estimated_angle = mean(nonzero(filtered_logical .* angle_array));
+estimated_angle = mean(nonzeros(filtered_logical .* angle_array));
 %%%%%%%% Plot the profile %%%%%%%%
 figure;
 plot(angle_array, gains_per_angle);

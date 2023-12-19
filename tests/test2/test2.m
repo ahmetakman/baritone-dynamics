@@ -1,5 +1,10 @@
+
+clear all;
+clc;
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
+
+flag_narrow = false;
 
 sample_frequency = 1e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
 interval = [2.8 3.8] % in GHz
@@ -36,14 +41,22 @@ rxPluto.Gain = 10; % To be tuned further.
 
 %%% HOPPING SEARCH %%%
 for i = 1:num_search
-[Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
-if(Av>-40)
+if (flag_narrow == false)
+    [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
+else
+    freq_scan = linspace(int32(detected_freq-20*sample_frequency),int32(detected_freq+20*sample_frequency),40);
+    [Av, FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
+end
+
+
+if(Av>-65)
 disp(Av);
 disp(FREQ);
 else
-disp("Not yet detected")
+disp("Not yet detected or hopped")
+flag_narrow = false;
 end
-pause(0.01)
+pause(0.001)
 disp("waited")
 end
 
