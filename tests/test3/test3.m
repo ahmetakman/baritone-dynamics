@@ -54,7 +54,7 @@ disp("Not yet detected")
 end
 pause(1)
 
-freq_scan = linspace(int32(detected_freq-20*sample_frequency),int32(detected_freq+20*sample_frequency),40);
+freq_scan = linspace(round(detected_freq-20*sample_frequency),round(detected_freq+20*sample_frequency),40);
 
 gains_per_angle = [];
 

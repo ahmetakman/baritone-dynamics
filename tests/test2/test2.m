@@ -43,8 +43,9 @@ rxPluto.Gain = 10; % To be tuned further.
 for i = 1:num_search
 if (flag_narrow == false)
     [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
+
 else
-    freq_scan = linspace(int32(detected_freq-20*sample_frequency),int32(detected_freq+20*sample_frequency),40);
+    freq_scan = linspace(round(FREQ-(20*sample_frequency)),round(FREQ+(20*sample_frequency)),40);
     [Av, FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 end
 
@@ -52,11 +53,12 @@ end
 if(Av>-65)
 disp(Av);
 disp(FREQ);
+flag_narrow = true;
 else
 disp("Not yet detected or hopped")
 flag_narrow = false;
 end
-pause(0.001)
+pause(0.00001)
 disp("waited")
 end
 
