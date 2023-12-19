@@ -14,7 +14,7 @@ overlap_coefficient = 1; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 
-num_search = 75 ; % number of search attempts
+num_search = 5 ; % number of search attempts
 
 %%%%%%% BASIC CALCULATIONS AND INITIALIZATIONS %%%%%%%
 
@@ -50,7 +50,7 @@ else
 end
 
 
-if(Av>-65)
+if(Av>-80 )
 disp(Av);
 disp(FREQ);
 flag_narrow = true;
