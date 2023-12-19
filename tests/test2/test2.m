@@ -54,8 +54,8 @@ end
 
 function [gain,detected_f] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning)
 
-peaks = [];
-indices = [];
+peaks = zeros(num_iter,1);
+indices = zeros(num_iter,1);
 tic;
 
 for i = 1:num_iter
@@ -93,10 +93,10 @@ end
 pause(1);
 end
 
-[maxim index] = max(p);
+[maxim, index] = max(p);
 
-peaks = [peaks maxim];
-indices = [indices index];
+peaks(i) = maxim;
+indices(i) = index;
 
 end
 toc

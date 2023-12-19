@@ -121,7 +121,7 @@ end
 pause(1);
 end
 
-[maxim index] = max(p);
+[maxim, index] = max(p);
 
 peaks = [peaks maxim];
 indices = [indices index];
