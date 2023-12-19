@@ -1,11 +1,11 @@
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
 
-sample_frequency = 6e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
+sample_frequency = 1e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
 interval = [2.8 3.8] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
-overlap_coefficient = 3; % in case an overlap needed.
+overlap_coefficient = 1; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 

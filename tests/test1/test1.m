@@ -2,8 +2,8 @@
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
 
-sample_frequency = 6e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
-interval = [2.8 3.8] % in GHz
+sample_frequency = 1e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
+interval = [3.0 3.8] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
 overlap_coefficient = 1; % in case an overlap needed.
@@ -34,7 +34,7 @@ rxPluto.Gain = 10; % To be tuned further.
 
 
 [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
-if(Av>-40)
+if(Av>-120)
 disp(Av);
 disp(FREQ);
 else
