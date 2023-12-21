@@ -84,6 +84,7 @@ center_frequency = frequencies(i);
 if center_frequency > 3.8e9;
     center_frequency = 3.77e9;
 end
+
 %%%%%%%%% patchwork %%%%%%%%%%%%%%  
 
 rxPluto.CenterFrequency = center_frequency;
@@ -133,5 +134,11 @@ gain = pow2db(M);
 j = indices(I);
 
 detected_f = (f-sample_frequency*7)+j;% *7 instead of /2
+
+if center_frequency < 2.7e9;
+    gain = -120;
+
+end
+
 
 end
