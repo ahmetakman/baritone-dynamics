@@ -1,9 +1,10 @@
-
+clear all;
+clc;
 %%%%%%%%%%%%% ARGUMENT SETTINGS %%%%%%%%%%%%
 plot_while_scanning = false; % if true the scans will be plotted one by one. Note that this would slow down the process considerably.
 
 sample_frequency = 1e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
-interval = [3.0 3.8] % in GHz
+interval = [2.8 3.8] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
 overlap_coefficient = 1; % in case an overlap needed.
@@ -14,7 +15,7 @@ center_frequency = interval(1); %for initialization
 
 %set the center frequency set to be swept.
 num_iter = int32(overlap_coefficient*(interval(2)-interval(1))/(sample_frequency));
-frequencies = linspace(interval(1),interval(2),num_iter);
+frequencies = linspace(interval(1),interval(2),num_iter+1);%added +1 to num_iter
 
 % initialization of the pluto rx object.
 rxPluto = sdrrx('Pluto',...
@@ -33,8 +34,11 @@ rxPluto.GainSource = "Manual";
 rxPluto.Gain = 10; % To be tuned further.
 
 
+rxRadioInfo = info(rxPluto)
+data = rxPluto();
+pause(1)
 [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
-if(Av>-120)
+if(Av>-80)
 disp(Av);
 disp(FREQ);
 else
@@ -102,6 +106,6 @@ gain = pow2db(M);
 
 j = indices(I);
 
-detected_f = (f-sample_frequency/2)+j;
+detected_f = (f-sample_frequency*7)+j;% *7 instead of /2
 
 end
