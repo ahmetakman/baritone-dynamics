@@ -49,7 +49,7 @@ if (flag_narrow == false)
     [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
 
 else
-    freq_scan = linspace(round(FREQ-(20*sample_frequency)),round(FREQ+(20*sample_frequency)),41);
+    freq_scan = linspace(FREQ-(20*sample_frequency),FREQ+(20*sample_frequency),41);
     [Av, FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 end
 
@@ -80,6 +80,11 @@ tic;
 for i = 1:num_iter
 center_frequency = frequencies(i);
 
+%%%%%%%%% patchwork %%%%%%%%%%%%%%
+if center_frequency > 3.8e9;
+    center_frequency = 3.77e9;
+end
+%%%%%%%%% patchwork %%%%%%%%%%%%%%  
 
 rxPluto.CenterFrequency = center_frequency;
 
