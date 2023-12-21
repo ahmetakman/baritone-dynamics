@@ -19,7 +19,7 @@ angle_interval = 10; % e.g. change per measurement.
 
 %set the center frequency set to be swept.
 num_iter = int32(overlap_coefficient*(interval(2)-interval(1))/(sample_frequency));
-frequencies = linspace(interval(1),interval(2),num_iter);
+frequencies = linspace(interval(1),interval(2),num_iter+1);%added +1 to num_iter
 
 % set the angle point group. e.g. = [0 10 20 30 40 ... 355]
 num_angle = int32((max_angle-angle_interval)/angle_interval)+1;
@@ -43,10 +43,12 @@ rxPluto.GainSource = "Manual";
 rxPluto.Gain = 10; % To be tuned further.
 
 %%%%%%%%%5 ACTIVE RUN %%%%%%%%%%
-
+rxRadioInfo = info(rxPluto)
+data = rxPluto();
+pause(1)
 [Av, detected_freq] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
 
-if(Av>-65)
+if(Av>-75)
 disp(Av);
 disp(detected_freq);
 else
@@ -54,7 +56,7 @@ disp("Not yet detected")
 end
 pause(1)
 
-freq_scan = linspace(round(detected_freq-20*sample_frequency),round(detected_freq+20*sample_frequency),40);
+freq_scan = linspace(FREQ-(20*sample_frequency),FREQ+(20*sample_frequency),41);
 
 gains_per_angle = [];
 
@@ -63,7 +65,7 @@ disp(["Set the angle to",num2str(angle_array(j)),"and press a key to measure."])
 pause;
 [Av,FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 
-if(Av>-65)
+if(Av>-75)
     gains_per_angle = [gains_per_angle Av];
 else
     angle_array(j) = 1;
@@ -87,14 +89,18 @@ title(["Estimated Angle = ",num2str(estimated_angle)]);
 
 function [gain,detected_f] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning)
 
-peaks = [];
-indices = [];
+    peaks = zeros(num_iter,1);
+    indices = zeros(num_iter,1);
 tic;
 
 for i = 1:num_iter
 center_frequency = frequencies(i);
 
-
+%%%%%%%%% patchwork %%%%%%%%%%%%%%
+if center_frequency > 3.8e9;
+    center_frequency = 3.77e9;
+end
+%%%%%%%%% patchwork %%%%%%%%%%%%%%  
 rxPluto.CenterFrequency = center_frequency;
 
 data = rxPluto();
@@ -128,20 +134,20 @@ end
 
 [maxim, index] = max(p);
 
-peaks = [peaks maxim];
-indices = [indices index];
+peaks(i) = maxim;
+indices(i) = index;
 
 end
 toc
 
 [M, I] = max(peaks);
-df = frequencies(I);
+f = frequencies(I);
 
 gain = pow2db(M);
 
 j = indices(I);
 
-detected_f = df;%(f-sample_frequency/2)+j;
+detected_f = (f-sample_frequency*7)+j;% *7 instead of /2
 
 end
 
