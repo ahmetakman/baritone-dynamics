@@ -11,7 +11,7 @@ overlap_coefficient = 1; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 
-max_angle = 360; % in degrees.
+max_angle = 180; % in degrees.
 angle_interval = 10; % e.g. change per measurement.
 
 
@@ -56,7 +56,7 @@ disp("Not yet detected")
 end
 pause(1)
 
-freq_scan = linspace(FREQ-(20*sample_frequency),FREQ+(20*sample_frequency),41);
+freq_scan = linspace(detected_freq-(20*sample_frequency),detected_freq+(20*sample_frequency),41);
 
 gains_per_angle = [];
 
@@ -71,7 +71,7 @@ else
     angle_array(j) = 1;
 end
 end
-angle_array = angle_array(angle_array>1);
+angle_array = angle_array(angle_array~=1);
 %%%%%%%% Estimate the angle %%%%%%
 mean_gain = mean(gains_per_angle);
 filtered_logical = gains_per_angle > mean_gain;
