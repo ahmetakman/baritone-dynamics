@@ -20,7 +20,7 @@ num_search = 5 ; % number of search attempts
 
 %set the center frequency set to be swept.
 num_iter = int32(overlap_coefficient*(interval(2)-interval(1))/(sample_frequency));
-frequencies = linspace(interval(1),interval(2),num_iter);
+frequencies = linspace(interval(1),interval(2),num_iter+1);%added +1 to num_iter
 
 % initialization of the pluto rx object.
 rxPluto = sdrrx('Pluto',...
@@ -39,13 +39,17 @@ rxPluto.GainSource = "Manual";
 rxPluto.Gain = 10; % To be tuned further.
 
 
+rxRadioInfo = info(rxPluto)
+data = rxPluto();
+pause(1)
+
 %%% HOPPING SEARCH %%%
 for i = 1:num_search
 if (flag_narrow == false)
     [Av, FREQ] = search(rxPluto,frequencies,sample_frequency,num_iter,plot_while_scanning);
 
 else
-    freq_scan = linspace(round(FREQ-(20*sample_frequency)),round(FREQ+(20*sample_frequency)),40);
+    freq_scan = linspace(round(FREQ-(20*sample_frequency)),round(FREQ+(20*sample_frequency)),41);
     [Av, FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 end
 
@@ -123,6 +127,6 @@ gain = pow2db(M);
 
 j = indices(I);
 
-detected_f = (f-sample_frequency/2)+j;
+detected_f = (f-sample_frequency*7)+j;% *7 instead of /2
 
 end
