@@ -6,15 +6,15 @@ plot_while_scanning = false; % if true the scans will be plotted one by one. Not
 
 flag_narrow = false;
 
-sample_frequency = 1e+7; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
-interval = [2.8 3.8] % in GHz
+sample_frequency = 1e+6; % baseband sample rate range = (min--> 6.52e+4,  max--> 6.133e+7)
+interval = [2.3 2.5] % in GHz
 
 interval = interval * 1e9; % conversion to the Hz.
 overlap_coefficient = 1; % in case an overlap needed.
 
 center_frequency = interval(1); %for initialization
 
-num_search = 5 ; % number of search attempts
+num_search = 15 ; % number of search attempts
 
 %%%%%%% BASIC CALCULATIONS AND INITIALIZATIONS %%%%%%%
 
@@ -52,7 +52,7 @@ else
     freq_scan = linspace(FREQ-(20*sample_frequency),FREQ+(20*sample_frequency),41);
     [Av, FREQ] = search(rxPluto,freq_scan,sample_frequency,length(freq_scan),plot_while_scanning);
 end
-
+disp(Av);
 
 if(Av>-80 )
 disp(Av);
